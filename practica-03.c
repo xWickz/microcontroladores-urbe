@@ -19,31 +19,49 @@ ambos casos es la misma variable)
 
 #include <16f877a.h>
 #fuses XT, NOWDT, NOLVP, NOPROTECT
-#use delay(clock=4000000)
+#use delay(clock=4000000) // Reloj de 4MHz
 
-#define TUNI PORTC, 0
-#define TDEC PORTC, 1
+#define TUNI PORTC, 0 // Unidades
+#define TDEC PORTC, 1 // Decenas
 
-byte const display[10] = {0x3f,0x06,0x5b,0x4f,0x66,0x6d,0x7d,0x07,0x7f,0x67};
 #byte PORTD = 8
 #byte PORTC = 7
 #byte PORTB = 6
+
+// Variables para el display
+byte const display[10] = {0x3f,0x06,0x5b,0x4f,0x66,0x6d,0x7d,0x07,0x7f,0x67};
 
 int modo = 0;
 int8 segundos = 0;
 int8 contador = 0;
 
+// Funcion para el display
 #int_TIMER0
 void timer0_isr() {
     set_timer0(0);
     contador++;
-    if(contador >= 60) { 
+    
+    if(contador >= 60) {
         contador = 0;
-        if(modo == 1 && segundos < 59) segundos++;
-        else if(modo == 2 && segundos > 0) segundos--;
+
+        if(modo == 1) { // Modo Ascendente
+            if(segundos >= 59) {
+                segundos = 0;
+            } else {
+                segundos++;
+            }
+        } 
+        else if(modo == 2) { // Modo Descendente
+            if(segundos <= 0) {
+                segundos = 59;
+            } else {
+                segundos--;
+            }
+        }
     }
 }
 
+// Multiplexado de los display
 void pantalla() {
     int d = segundos / 10;
     int u = segundos % 10;
@@ -61,11 +79,15 @@ void pantalla() {
     bit_clear(TDEC);
 }
 
+// Funcion principal
 void main() {
+
+      // Habilitamos los puertos B, C, D
     set_tris_d(0);
     set_tris_c(0);
     set_tris_b(0xFF);
-
+   
+   // Habilitamos el display
     setup_timer_0(RTCC_INTERNAL | RTCC_DIV_64);
     set_timer0(0);
     enable_interrupts(INT_TIMER0);
@@ -75,14 +97,11 @@ void main() {
         
         int8 botones = PORTB & 0x0F;
 
-        if(bit_test(botones,0)) modo = 1; // sbir
-        else if(bit_test(botones,1)) modo = 2;  // bajar
-        else if(bit_test(botones,2)) modo = 0;  // detener
-        else if(bit_test(botones,3)) segundos = 0; // reiniciar
+        if(bit_test(botones,0)) modo = 1; // Temporizador Ascendente
+        else if(bit_test(botones,1)) modo = 2;  // Temporizador Descendente
+        else if(bit_test(botones,2)) modo = 0;  // Detener/Pausar
+        else if(bit_test(botones,3)) segundos = 0; // Reiniciar
 
-        if(modo == 1) ;
-        else if(modo == 2) ; 
-
-        pantalla();
+        pantalla();  // Multiplexacion continua
     }
 }

@@ -14,7 +14,7 @@ mediante 4 pulsadores (cada pulsador o combinación de dos inicializara una ruti
 
 #include <16F877A.h>
 #fuses XT, NOWDT, NOLVP, NOPROTECT
-#use delay(clock=4000000) // 4mhz
+#use delay(clock = 4000000) // 4mhz
 
 #byte PORTB = 8
 
@@ -27,80 +27,103 @@ void secuencia6();
 void secuencia7();
 void secuencia8();
 
-void main() {
+void main()
+{
 
    set_tris_b(0x0F);
    set_tris_d(0x00);
 
    output_d(0x00);
 
-   while(TRUE) {
+   while (TRUE)
+   {
 
       // RB0
-      if (input(PIN_B0) && !input(PIN_B1) && !input(PIN_B2)) {
+      if (input(PIN_B0) && !input(PIN_B1) && !input(PIN_B2))
+      {
          delay_ms(30);
-         if (input(PIN_B0)) secuencia1();
+         if (input(PIN_B0))
+            secuencia1();
       }
 
       // RB1
-      if (input(PIN_B1) && !input(PIN_B0) && !input(PIN_B2)) {
+      if (input(PIN_B1) && !input(PIN_B0) && !input(PIN_B2))
+      {
          delay_ms(30);
-         if (input(PIN_B1)) secuencia2();
+         if (input(PIN_B1))
+            secuencia2();
       }
 
       // RB2
-      if (input(PIN_B2) && !input(PIN_B0) && !input(PIN_B1)) {
+      if (input(PIN_B2) && !input(PIN_B0) && !input(PIN_B1))
+      {
          delay_ms(30);
-         if (input(PIN_B2)) secuencia3();
+         if (input(PIN_B2))
+            secuencia3();
       }
 
       // RB3
-      if (input(PIN_B3)) {
+      if (input(PIN_B3))
+      {
          delay_ms(30);
-         if (input(PIN_B3)) secuencia4();
+         if (input(PIN_B3))
+            secuencia4();
       }
 
       // RB0 + RB1
-      if (input(PIN_B0) && input(PIN_B1)) {
+      if (input(PIN_B0) && input(PIN_B1))
+      {
          delay_ms(30);
-         if (input(PIN_B0) && input(PIN_B1)) secuencia5();
+         if (input(PIN_B0) && input(PIN_B1))
+            secuencia5();
       }
 
       // RB0 + RB2
-      if (input(PIN_B0) && input(PIN_B2)) {
+      if (input(PIN_B0) && input(PIN_B2))
+      {
          delay_ms(30);
-         if (input(PIN_B0) && input(PIN_B2)) secuencia6();
+         if (input(PIN_B0) && input(PIN_B2))
+            secuencia6();
       }
 
       // RB1 + RB2
-      if (input(PIN_B1) && input(PIN_B2)) {
+      if (input(PIN_B1) && input(PIN_B2))
+      {
          delay_ms(30);
-         if (input(PIN_B1) && input(PIN_B2)) secuencia7();
+         if (input(PIN_B1) && input(PIN_B2))
+            secuencia7();
       }
 
       // RB2 + RB3
-      if (input(PIN_B2) && input(PIN_B3)) {
+      if (input(PIN_B2) && input(PIN_B3))
+      {
          delay_ms(30);
-         if (input(PIN_B2) && input(PIN_B3)) secuencia8();
+         if (input(PIN_B2) && input(PIN_B3))
+            secuencia8();
       }
    }
 }
 
 // Secuencia 1: Corrimiento simple
-void secuencia1() {
-   for(int t=0; t<4; t++) {
-      for(int i=0; i<8; i++) {
-         output_high(PIN_D0+i);
+void secuencia1()
+{
+   for (int t = 0; t < 4; t++)
+   {
+      for (int i = 0; i < 8; i++)
+      {
+         output_high(PIN_D0 + i);
          delay_ms(125);
-         output_low(PIN_D0+i);
+         output_low(PIN_D0 + i);
       }
    }
    output_d(0x00);
 }
 
 // Secuencia 2: Todos ON / OFF (250 ms)
-void secuencia2() {
-   for(int i=0; i<8; i++) {
+void secuencia2()
+{
+   for (int i = 0; i < 8; i++)
+   {
       output_d(0xFF);
       delay_ms(250);
       output_d(0x00);
@@ -109,8 +132,10 @@ void secuencia2() {
 }
 
 // Secuencia 3: Patrón alternado
-void secuencia3() {
-   for(int i=0; i<16; i++) {
+void secuencia3()
+{
+   for (int i = 0; i < 16; i++)
+   {
       output_d(0xAA);
       delay_ms(250);
       output_d(0x55);
@@ -120,20 +145,25 @@ void secuencia3() {
 }
 
 // Secuencia 4: Corrimiento inverso
-void secuencia4() {
-   for(int t=0; t<4; t++) {
-      for(int i=7; i>=0; i--) {
-         output_high(PIN_D0+i);
+void secuencia4()
+{
+   for (int t = 0; t < 4; t++)
+   {
+      for (int i = 7; i >= 0; i--)
+      {
+         output_high(PIN_D0 + i);
          delay_ms(125);
-         output_low(PIN_D0+i);
+         output_low(PIN_D0 + i);
       }
    }
    output_d(0x00);
 }
 
 // Secuencia 5: Mitades
-void secuencia5() {
-   for(int i=0; i<16; i++) {
+void secuencia5()
+{
+   for (int i = 0; i < 16; i++)
+   {
       output_d(0x0F);
       delay_ms(250);
       output_d(0xF0);
@@ -143,9 +173,11 @@ void secuencia5() {
 }
 
 // Secuencia 6: Acumulativo
-void secuencia6() {
+void secuencia6()
+{
    int mask = 0;
-   for(int i=0; i<8; i++) {
+   for (int i = 0; i < 8; i++)
+   {
       mask = (mask << 1) | 1;
       output_d(mask);
       delay_ms(500);
@@ -154,26 +186,32 @@ void secuencia6() {
 }
 
 // Secuencia 7: Rebote
-void secuencia7() {
-   for(int t=0; t<2; t++) {
-      for(int i=0; i<8; i++) {
-         output_high(PIN_D0+i);
+void secuencia7()
+{
+   for (int t = 0; t < 2; t++)
+   {
+      for (int i = 0; i < 8; i++)
+      {
+         output_high(PIN_D0 + i);
          delay_ms(125);
-         output_low(PIN_D0+i);
+         output_low(PIN_D0 + i);
       }
-      for(int i=6; i>0; i--) {
-         output_high(PIN_D0+i);
+      for (int i = 6; i > 0; i--)
+      {
+         output_high(PIN_D0 + i);
          delay_ms(125);
-         output_low(PIN_D0+i);
+         output_low(PIN_D0 + i);
       }
    }
    output_d(0x00);
 }
 
 // Secuencia 8: Todos encendidos progresivo
-void secuencia8() {
-   for(int i=0; i<8; i++) {
-      output_d((1<<(i+1))-1);
+void secuencia8()
+{
+   for (int i = 0; i < 8; i++)
+   {
+      output_d((1 << (i + 1)) - 1);
       delay_ms(500);
    }
    output_d(0x00);
