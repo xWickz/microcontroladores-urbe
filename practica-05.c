@@ -75,8 +75,9 @@ void cargar_config() {
 }
 
 void main() {
+   
    // Configuración ADC para el LM35
-   setup_adc_ports(AN0); // Pin A0 analógico
+   setup_adc_ports(AN0_AN1_VSS_VREF);
    setup_adc(ADC_CLOCK_INTERNAL);
    set_adc_channel(0);
 
@@ -99,7 +100,8 @@ void main() {
          
          // Lectura de Temperatura
          valor_adc = read_adc();
-         temperatura = (valor_adc * 0.48828); // Conversión para LM35 a 5V (500/1024)
+         temperatura = valor_adc;
+         temperatura = temperatura / 10;
 
          if(++SEG >= 60) {
             SEG = 0; ALARM_SIL = 0;
